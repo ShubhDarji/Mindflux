@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect,useMemo  } from 'react';
 import './Landing.css';
 import { motion, useMotionValue, animate, useInView, useAnimation, delay } from 'framer-motion';
 import { start } from 'repl';
@@ -11,6 +11,7 @@ const Landing = () => {
     animate(x, 0, { type: 'spring', stiffness: 300, damping: 20 });
     animate(y, 0, { type: 'spring', stiffness: 300, damping: 20 });
   };
+  const a:array=[];
 
   const capsuleRef = useRef(null);
   const inView = useInView(capsuleRef, { amount: 0.6 });
@@ -24,6 +25,8 @@ const Landing = () => {
     }
   }, [inView, controls]);
 
+  // Generate random positions for each image only when inView becomes true
+ 
   return (
     <div className="landing-container">
       {/* Background Circles */}
@@ -122,17 +125,22 @@ const Landing = () => {
         color:"#fff",
         height: "300px",
         borderRadius: "100px",
-        backgroundColor: "#fff",
+
       },
       expanded: {
         height: "100vh",
         borderRadius: "0px",
-        backgroundColor: "#fff",
+
     color:"#000000",
         transition: {
-            delay:.5,
-          duration: 1.2,
-          ease: "easeInOut"
+            default:{
+                type:"spring",
+                stiffness:"100",
+                ease: "ease",
+            },
+            
+          duration: 1,
+          
         
         },
 
@@ -140,35 +148,40 @@ const Landing = () => {
       },
     }}
   >
-    <motion.div
-      className="capsule-text"
-      initial={{
-        y: 100,
-        scale: 1,
-        opacity: 1
-      }}
-
-
-      animate={inView ? { y: 1, scale: 1, opacity: 1 } : {}}
-      transition={{ duration: 2, delay: .2 }}
-    >
-      this is the text
-    </motion.div>
-
-    {inView && (
-      <motion.div className="images-wrapper">
-        {[...Array(6)].map((_, idx) => (
-          <motion.img
-            key={idx}
-           src={`https://source.unsplash.com/random/300x300?ai&sig=${idx}`}
-
-            className="ai-image"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: idx * .2 }}
-          />
-        ))}
+   <motion.div
+        className="capsule-text"
+        initial={{ y: 100, scale: 1, opacity: 1 }}
+        animate={inView ? { y: 0, scale: 1.2, opacity: 1 } : {}}
+        transition={{ duration: 2, delay: 0.2 }}
+      >
+        MINDFLUX is your Personal <br /><span>
+{a}
+        </span>
       </motion.div>
+
+      {/* BACKGROUND IMAGES */}
+      {inView && (
+        <div className="images-wrapper">
+          {[...Array(100)].map((_, idx) => (
+            <motion.img
+              key={idx}
+              src={`https://source.unsplash.com/random/300x300?ai&sig=${idx}`}
+              className="ai-image"
+              style={{
+             
+                position: "absolute",
+                zIndex: 0,
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                borderRadius: "50%", // optional
+              }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 0.4 }}
+              transition={{ delay: idx * 0.2, duration: 1 }}
+            />
+          ))}
+        </div>
     )}
   </motion.section>
 </div>
