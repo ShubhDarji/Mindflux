@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import './Landing.css';
-import { motion, useMotionValue, animate } from 'framer-motion';
+import { motion, useMotionValue, animate, useInView, useAnimation } from 'framer-motion';
 
 const Landing = () => {
   const x = useMotionValue(0);
@@ -10,6 +10,18 @@ const Landing = () => {
     animate(x, 0, { type: 'spring', stiffness: 300, damping: 20 });
     animate(y, 0, { type: 'spring', stiffness: 300, damping: 20 });
   };
+
+  const capsuleRef = useRef(null);
+  const inView = useInView(capsuleRef, { threshold: 0.6 });
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (inView) {
+      controls.start('expanded');
+    } else {
+      controls.start('initial');
+    }
+  }, [inView, controls]);
 
   return (
     <div className="landing-container">
@@ -97,33 +109,85 @@ const Landing = () => {
           </svg>
         </motion.div>
       </div>
-      <div className='contain'>
-        <div className='left'>
-            <div className='l1'>
-                   <div className='ctitle'>Cognitive Workspace </div>
-                <div className='csubtitle'>Plan and think smarter. AI suggests what matters next.</div>
-            </div>
+
+      <motion.section
+        ref={capsuleRef}
+        className="capsule"
+        animate={controls}
+        variants={{
+          initial: {
+            height: "300px",
+            borderRadius: "100px",
+            backgroundColor: "#fff",
+          },
+          expanded: {
+            height: "100vh",
+            borderRadius: "0px",
+            backgroundColor: "#fff",
+            transition: {
+              duration: 1.2,
+              ease: "easeInOut"
+            },
+          },
+        }}
+      >
+        <motion.div
+          className="capsule-text"
+          initial={{
+            y: 100,
+            scale: 1,
+            opacity: 0
+          }}
+          animate={inView ? { y: 0, scale: 1, opacity: 1 } : {}}
+          transition={{duration:1,delay:2}}
+        >
+            this is the text
+        </motion.div>
+       {inView && (
+  <motion.div className="images-wrapper">
+    {[...Array(6)].map((_, idx) => (
+      <motion.img
+        key={idx}
+        src={`https://source.unsplash.com/random/300x300?ai&sig=${idx}`}
+        className="ai-image"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: idx * 0.2 }}
+      />
+    ))}
+  </motion.div>
+)}
+
+        
+      </motion.section>
+
+      <div className="contain">
+        <div className="left">
+          <div className="l1">
+            <div className="ctitle">Cognitive Workspace </div>
+            <div className="csubtitle">Plan and think smarter. AI suggests what matters next.</div>
+          </div>
         </div>
-        <div className='right'>
-              <div className='r1'>
-              <div className='ctitle'> Memory  Vault</div>
-                <div className='csubtitle'>Store your thoughts, voice notes, and dreams in a timeline.</div>
-            </div>
+        <div className="right">
+          <div className="r1">
+            <div className="ctitle"> Memory  Vault</div>
+            <div className="csubtitle">Store your thoughts, voice notes, and dreams in a timeline.</div>
+          </div>
         </div>
-        <div className='left'>
-              <div className='l2'>
-                <div className='ctitle'>Emotion  Center</div>
-                <div className='csubtitle'>Track your mind. Visualize your feelings.</div>
-            </div>
+        <div className="left">
+          <div className="l2">
+            <div className="ctitle">Emotion  Center</div>
+            <div className="csubtitle">Track your mind. Visualize your feelings.</div>
+          </div>
         </div>
-        <div className='right'>
-              <div className='r2'>
-              <div className='ctitle'> Focus  Zone </div>
-                <div className='csubtitle'>Silence the noise. Enter deep flow.</div>
-            </div>
-        </div></div>
+        <div className="right">
+          <div className="r2">
+            <div className="ctitle"> Focus  Zone </div>
+            <div className="csubtitle">Silence the noise. Enter deep flow.</div>
+          </div>
+        </div>
       </div>
-    
+    </div>
   );
 };
 
