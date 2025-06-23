@@ -9,13 +9,25 @@
 
 .landing-container {
   position: relative;
-
+ height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
   background: radial-gradient(circle at 30% 30%, #000000, #000000 60%, #000000);
   color: white;
-
+ -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
-  padding: 1.5rem;
+  
+  
 }
+.hero-section,
+.capsule-wrapper,
+.contain {
+  scroll-snap-align: start;
+  height: 100vh; /* make sure each section fills viewport */
+  width: 100%;
+}
+
 
 /* Circles Background (Mobile First) */
 .circles-background {
@@ -215,6 +227,11 @@
   }
 }
 .contain {
+  
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
+
   width: 80%;
   margin: 0 auto;
   display: flex;
@@ -283,6 +300,11 @@
 
 @media (max-width: 500px) {
   .contain {
+    .contain {
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
+}
   }
   .right,
   .left {
@@ -325,19 +347,29 @@
 }
 }
 
-.capsule {
-  overflow: hidden;
+.capsule-wrapper {
   position: relative;
-  margin: 5rem auto;
-  width: 80%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  height: 100vh; /* reserve full height always */
+  margin-bottom: 2rem; /* optional spacing before .contain */
 }
 
+.capsule {
+  position: absolute;
+display: flex;
+flex-direction: column;
+align-content: center;
+justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  z-index: 1;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+
+
 .capsule-text {
-  color: #fff;
+
   font-size: 2rem;
   font-weight: bold;
   text-align: center;

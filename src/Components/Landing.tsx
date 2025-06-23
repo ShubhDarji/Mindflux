@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import './Landing.css';
-import { motion, useMotionValue, animate, useInView, useAnimation } from 'framer-motion';
+import { motion, useMotionValue, animate, useInView, useAnimation, delay } from 'framer-motion';
+import { start } from 'repl';
 
 const Landing = () => {
   const x = useMotionValue(0);
@@ -12,14 +13,14 @@ const Landing = () => {
   };
 
   const capsuleRef = useRef(null);
-  const inView = useInView(capsuleRef, { threshold: 0.6 });
+  const inView = useInView(capsuleRef, { amount: 0.6 });
   const controls = useAnimation();
 
   useEffect(() => {
     if (inView) {
       controls.start('expanded');
     } else {
-      controls.start('initial');
+      controls.start('collapsed');
     }
   }, [inView, controls]);
 
@@ -110,56 +111,68 @@ const Landing = () => {
         </motion.div>
       </div>
 
-      <motion.section
-        ref={capsuleRef}
-        className="capsule"
-        animate={controls}
-        variants={{
-          initial: {
-            height: "300px",
-            borderRadius: "100px",
-            backgroundColor: "#fff",
-          },
-          expanded: {
-            height: "100vh",
-            borderRadius: "0px",
-            backgroundColor: "#fff",
-            transition: {
-              duration: 1.2,
-              ease: "easeInOut"
-            },
-          },
-        }}
-      >
-        <motion.div
-          className="capsule-text"
-          initial={{
-            y: 100,
-            scale: 1,
-            opacity: 0
-          }}
-          animate={inView ? { y: 0, scale: 1, opacity: 1 } : {}}
-          transition={{duration:1,delay:2}}
-        >
-            this is the text
-        </motion.div>
-       {inView && (
-  <motion.div className="images-wrapper">
-    {[...Array(6)].map((_, idx) => (
-      <motion.img
-        key={idx}
-        src={`https://source.unsplash.com/random/300x300?ai&sig=${idx}`}
-        className="ai-image"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: idx * 0.2 }}
-      />
-    ))}
-  </motion.div>
-)}
+     <div className="capsule-wrapper">
+  <motion.section
+    ref={capsuleRef}
+    className="capsule"
+    animate={controls}
+  
+    variants={{
+      initial: {
+        color:"#fff",
+        height: "300px",
+        borderRadius: "100px",
+        backgroundColor: "#fff",
+      },
+      expanded: {
+        height: "100vh",
+        borderRadius: "0px",
+        backgroundColor: "#fff",
+    color:"#000000",
+        transition: {
+            delay:.5,
+          duration: 1.2,
+          ease: "easeInOut"
+        
+        },
 
         
-      </motion.section>
+      },
+    }}
+  >
+    <motion.div
+      className="capsule-text"
+      initial={{
+        y: 100,
+        scale: 1,
+        opacity: 1
+      }}
+
+
+      animate={inView ? { y: 1, scale: 1, opacity: 1 } : {}}
+      transition={{ duration: 2, delay: .2 }}
+    >
+      this is the text
+    </motion.div>
+
+    {inView && (
+      <motion.div className="images-wrapper">
+        {[...Array(6)].map((_, idx) => (
+          <motion.img
+            key={idx}
+           src={`https://source.unsplash.com/random/300x300?ai&sig=${idx}`}
+
+            className="ai-image"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: idx * .2 }}
+          />
+        ))}
+      </motion.div>
+    )}
+  </motion.section>
+</div>
+
 
       <div className="contain">
         <div className="left">
