@@ -5,24 +5,29 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  color: black;
 }
 
 .landing-container {
   position: relative;
- height: 100vh;
-  overflow-y: scroll;
+
+  height: 100vh;
+
+
+
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
-  background: radial-gradient(circle at 30% 30%, #000000, #000000 60%, #000000);
-  color: white;
+  background-color: white;
+/*   background: radial-gradient(circle at 30% 30%, #000000, #000000 60%, #000000);
+  color: white; */
  -webkit-overflow-scrolling: touch;
-  overflow-x: hidden;
+
   
   
 }
 .hero-section,
 .capsule-wrapper,
-.contain {
+.contain, .scroll-container {
   scroll-snap-align: start;
   height: 100vh; /* make sure each section fills viewport */
   width: 100%;
@@ -30,12 +35,12 @@
 
 
 /* Circles Background (Mobile First) */
-.circles-background {
+/* .circles-background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%; /* changed */
+  height: 100%; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -50,7 +55,7 @@
   justify-content: center;
 }
 
-/* Circle styles for mobile */
+
 .circle {
   width: 33vw;
   height: 33vw;
@@ -67,15 +72,15 @@
 .green {
   background: #00ff62;
 }
-
+ */
 /* Actual content */
-.content {
+/* .content {
   position: relative;
   z-index: 1;
-  padding-top: 8vh; /* same as navbar height */
+  padding-top: 8vh; /* same as navbar height *
 }
 
-/* ===== Tablet Devices (Foldables & Tablets) ===== */
+
 @media (min-width: 600px) {
   .circle {
     width: 33vw;
@@ -92,7 +97,7 @@
   }
 }
 
-/* ===== Desktop Devices ===== */
+/* ===== Desktop Devices ===== *
 @media (min-width: 1024px) {
   .circles-background {
     gap: 12vh;
@@ -111,7 +116,7 @@
   .content p {
     font-size: 1.5vw;
   }
-}
+} */
 .navbar {
   position: fixed;
   top: 0;
@@ -125,7 +130,7 @@
   justify-content: space-between;
 
   z-index: 2;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .logo {
@@ -186,6 +191,7 @@
   margin-bottom: 1rem;
   line-height: 1.4;
   word-wrap: break-word;
+  color: #000000;
 }
 
 .minitext {
@@ -193,7 +199,7 @@
   max-width: 750px;
   margin: 0 auto;
   padding: 0 1rem;
-  color: #cfcfcf;
+  color: #000000;
   word-wrap: break-word;
 }
 
@@ -348,28 +354,25 @@
 }
 
 .capsule-wrapper {
+  height: 500vh;
   position: relative;
-  height: 100vh; /* reserve full height always */
-  margin-bottom: 2rem; /* optional spacing before .contain */
 }
 
 .capsule {
-  position: absolute;
-display: flex;
-flex-direction: column;
-align-content: center;
-justify-content: center;
-  width: 100%;
-  overflow: hidden;
-  z-index: 1;
-  padding: 2rem;
-  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: white;
+  z-index: 5;
+  overflow: hidden; /* Prevent children from overflowing */
 }
 
 
-
 .capsule-text {
-  color: white;
+
 
   font-size: 2rem;
   font-weight: bold;
@@ -380,7 +383,7 @@ justify-content: center;
 
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+
   gap: 1rem;
   margin-top: 2rem;
 }
@@ -391,4 +394,33 @@ justify-content: center;
   border-radius: 10px;
   object-fit: cover;
     border: 2px solid rgb(255, 255, 255);
+}
+
+
+.carousel {
+  width: 100%;
+  overflow: hidden;
+  padding: 2rem 0;
+}
+.scroll-container {
+  display: flex;
+  width: 100%;
+  height: 60vh;
+  gap: 2rem;
+  scroll-snap-type: y mandatory;
+  margin-right: 100vh;
+    
+}
+
+.card {
+  flex: 0 0 100vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  scroll-snap-align: start;
 }

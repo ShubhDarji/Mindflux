@@ -1,7 +1,8 @@
-import React, { useRef, useEffect,useMemo  } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import './Landing.css';
-import { motion, useMotionValue, animate, useInView, useAnimation, delay } from 'framer-motion';
+import { motion, useMotionValue, animate, useInView, useAnimation, delay, useScroll, useTransform } from 'framer-motion';
 import { start } from 'repl';
+import { once } from 'events';
 
 const Landing = () => {
   const x = useMotionValue(0);
@@ -11,11 +12,24 @@ const Landing = () => {
     animate(x, 0, { type: 'spring', stiffness: 300, damping: 20 });
     animate(y, 0, { type: 'spring', stiffness: 300, damping: 20 });
   };
-  const a:array=[];
 
   const capsuleRef = useRef(null);
+
   const inView = useInView(capsuleRef, { amount: 0.6 });
   const controls = useAnimation();
+
+  const containerRef=useRef(null);
+ const { scrollYProgress } = useScroll({
+  target: containerRef,
+  offset: ["start start", "end start"],
+});
+const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
+
+ useEffect(() => {
+  v.on("change", latest => {
+    console.log("x transform: ", latest);
+  });
+}, []);
 
   useEffect(() => {
     if (inView) {
@@ -26,7 +40,7 @@ const Landing = () => {
   }, [inView, controls]);
 
   // Generate random positions for each image only when inView becomes true
- 
+
   return (
     <div className="landing-container">
       {/* Background Circles */}
@@ -114,77 +128,56 @@ const Landing = () => {
         </motion.div>
       </div>
 
-     <div className="capsule-wrapper">
-  <motion.section
-    ref={capsuleRef}
-    className="capsule"
-    animate={controls}
-  
-    variants={{
-      initial: {
-        color:"#fff",
-        height: "300px",
-        borderRadius: "100px",
-
-      },
-      expanded: {
-        height: "100vh",
-        borderRadius: "0px",
-
-    color:"#000000",
-        transition: {
-            default:{
-                type:"spring",
-                stiffness:"100",
-                ease: "ease",
+        <div className="capsule-wrapper" ref={containerRef}>
+        <motion.section
+          ref={capsuleRef}
+          className="capsule"
+          animate={controls}
+          variants={{
+            initial: {
+              color: "#fff",
+              height: "300px",
+              borderRadius: "100px",
             },
-            
-          duration: 1,
-          
-        
-        },
+            expanded: {
+              
+              height: "100vh",
+              borderRadius: "0px",
+              color: "#000000",
+              transition: {
+                default: {
+                  stiffness: 100,
+                  ease: "easeInOut",
+                },
+                duration: 1,
+              },
+            },
+          }}
+        >
+          <motion.div
+            className="capsule-text"
+            initial={{ y: "50%", scale: 0.3, opacity: 0 }}
+            animate={inView ? { y: "0%", scale: 1.2, opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            MINDFLUX is your Personal <br />
+            <span>AI Assistant</span>   
+           
+          </motion.div> <div className="carousel">
+<motion.div style={{ x: v }} className="scroll-container">
 
-        
-      },
-    }}
-  >
-   <motion.div
-        className="capsule-text"
-        initial={{ y: 100, scale: 1, opacity: 1 }}
-        animate={inView ? { y: 0, scale: 1.2, opacity: 1 } : {}}
-        transition={{ duration: 2, delay: 0.2 }}
-      >
-        MINDFLUX is your Personal <br /><span>
-{a}
-        </span>
+        {["#ff0055", "#00cc88", "#ffaa00", "#3399ff"].map((color, i) => (
+          <div key={i} className="card" style={{ backgroundColor: color }}>
+            <h2>Card {i + 1}</h2>
+          </div>
+        ))}
       </motion.div>
+    </div>
 
-      {/* BACKGROUND IMAGES */}
-      {inView && (
-        <div className="images-wrapper">
-          {[...Array(100)].map((_, idx) => (
-            <motion.img
-              key={idx}
-              src={`https://source.unsplash.com/random/300x300?ai&sig=${idx}`}
-              className="ai-image"
-              style={{
-             
-                position: "absolute",
-                zIndex: 0,
-                width: "80px",
-                height: "80px",
-                objectFit: "cover",
-                borderRadius: "50%", // optional
-              }}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 0.4 }}
-              transition={{ delay: idx * 0.2, duration: 1 }}
-            />
-          ))}
-        </div>
-    )}
-  </motion.section>
-</div>
+          {/* Horizontal Scroll Cards */}
+        
+        </motion.section>
+      </div>
 
 
       <div className="contain">
@@ -213,6 +206,9 @@ const Landing = () => {
           </div>
         </div>
       </div>
+
+
+
     </div>
   );
 };
