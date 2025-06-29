@@ -1,16 +1,25 @@
-import React, { useRef, useEffect, useMemo } from 'react';
-import './Landing.css';
-import { motion, useMotionValue, animate, useInView, useAnimation, delay, useScroll, useTransform } from 'framer-motion';
-import { start } from 'repl';
-import { once } from 'events';
+import React, { useRef, useEffect, useMemo, useState } from "react";
+import "./Landing.css";
+import {
+  motion,
+  useMotionValue,
+  animate,
+  useInView,
+  useAnimation,
+  delay,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { start } from "repl";
+import { once } from "events";
 
 const Landing = () => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
   const handleDragEnd = () => {
-    animate(x, 0, { type: 'spring', stiffness: 300, damping: 20 });
-    animate(y, 0, { type: 'spring', stiffness: 300, damping: 20 });
+    animate(x, 0, { type: "spring", stiffness: 300, damping: 20 });
+    animate(y, 0, { type: "spring", stiffness: 300, damping: 20 });
   };
 
   const capsuleRef = useRef(null);
@@ -18,26 +27,62 @@ const Landing = () => {
   const inView = useInView(capsuleRef, { amount: 0.6 });
   const controls = useAnimation();
 
-  const containerRef=useRef(null);
- const { scrollYProgress } = useScroll({
-  target: containerRef,
-  offset: ["start start", "end start"],
-});
-const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
-
- useEffect(() => {
-  v.on("change", latest => {
-    console.log("x transform: ", latest);
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
   });
-}, []);
+  const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
+
+  useEffect(() => {
+    v.on("change", (latest) => {
+      console.log("x transform: ", latest);
+    });
+  }, []);
 
   useEffect(() => {
     if (inView) {
-      controls.start('expanded');
+      controls.start("expanded");
     } else {
-      controls.start('collapsed');
+      controls.start("collapsed");
     }
   }, [inView, controls]);
+  const [placeholder, setPlaceholder] = useState("");
+
+  const [hoverText, setHoverText] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const handleHover = (label) => {
+    const data = hoverData[label];
+    if (data) {
+      setHoverText(data.description);
+      setSelectedCategory(data.category);
+      setPlaceholder(data.description); // 👈 Set directly in input
+    }
+  };
+
+  const hoverData = {
+    "🧠 Cognitive Workspace": {
+      description: "Plan your tasks smartly with AI suggestions.",
+      category: "Tasks",
+    },
+    "🗂️ Memory Vault": {
+      description: "Store and retrieve memories, ideas, and dreams.",
+      category: "Memory",
+    },
+    "📊 Insight Stream": {
+      description: "Generate insights from logs and patterns.",
+      category: "AI Actions",
+    },
+    "🎯 Focus Zone": {
+      description: "Silence distractions and enter a flow state.",
+      category: "Focus",
+    },
+    "🧘 Emotion Center": {
+      description: "Track emotions and visualize mental health.",
+      category: "AI Actions",
+    },
+  };
 
   // Generate random positions for each image only when inView becomes true
 
@@ -59,7 +104,7 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
         className="navbar"
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1.4, ease: 'easeOut' }}
+        transition={{ duration: 1.4, ease: "easeOut" }}
       >
         <div className="logo">MindFlux</div>
         <div className="login">Login</div>
@@ -71,7 +116,7 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
           className="hero-content"
           initial={{ opacity: 0, y: 60 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }}
+          transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
         >
           <div className="title">MindFlux AI</div>
           <div className="subtitle">
@@ -80,7 +125,8 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
             Brain for the Future
           </div>
           <div className="minitext">
-            Control tasks, thoughts, memories, and focus — all in one intelligent dashboard.
+            Control tasks, thoughts, memories, and focus — all in one
+            intelligent dashboard.
           </div>
         </motion.div>
 
@@ -92,9 +138,14 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
           style={{ x, y }}
           onDragEnd={handleDragEnd}
           whileHover={{ scale: 1.1 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          transition={{ type: "spring", stiffness: 200, damping: 15 }}
         >
-          <svg width="300" height="300" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="300"
+            height="300"
+            viewBox="0 0 120 120"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <defs>
               <radialGradient id="orbGradient" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stopColor="#38bdf8" />
@@ -118,17 +169,35 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
               strokeWidth="2"
               fill="none"
             >
-              <animate attributeName="r" from="40" to="50" dur="2s" repeatCount="indefinite" />
-              <animate attributeName="opacity" from="1" to="0" dur="2s" repeatCount="indefinite" />
+              <animate
+                attributeName="r"
+                from="40"
+                to="50"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                from="1"
+                to="0"
+                dur="2s"
+                repeatCount="indefinite"
+              />
             </circle>
 
             {/* Inner glowing orb */}
-            <circle cx="60" cy="60" r="20" fill="url(#orbGradient)" filter="url(#glow)" />
+            <circle
+              cx="60"
+              cy="60"
+              r="20"
+              fill="url(#orbGradient)"
+              filter="url(#glow)"
+            />
           </svg>
         </motion.div>
       </div>
 
-        <div className="capsule-wrapper" ref={containerRef}>
+      <div className="capsule-wrapper" ref={containerRef}>
         <motion.section
           ref={capsuleRef}
           className="capsule"
@@ -140,7 +209,6 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
               borderRadius: "100px",
             },
             expanded: {
-              
               height: "100vh",
               borderRadius: "0px",
               color: "#000000",
@@ -161,26 +229,46 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
             transition={{ duration: 1, delay: 0.2 }}
           >
             MINDFLUX is your Personal <br />
-            <span>AI Assistant</span>   
-           
-          </motion.div> <div className="carousel">
-<motion.div style={{ x: v }} className="scroll-container">
+            <span>AI Assistant</span>
+          </motion.div>{" "}
+          <div className="carousel">
+            <motion.div style={{ x: v }} className="scroll-container">
 
-        {["#ff0055", "#00cc88", "#ffaa00", "#3399ff"].map((color, i) => (
-          <div key={i} className="card" style={{ backgroundColor: color }}>
-            <h2>Card {i + 1}</h2>
+                <div
+                 
+                  className="card"
+
+                >
+                  <h2>Card </h2>
+                </div>
+                 <div
+                 
+                  className="card"
+
+                >
+                  <h2>Card </h2>
+                </div>
+                 <div
+                 
+                  className="card"
+
+                >
+                  <h2>Card </h2>
+                </div> <div
+                 
+                  className="card"
+
+                >
+                  <h2>Card </h2>
+                </div>
+         
+            </motion.div>
           </div>
-        ))}
-      </motion.div>
-    </div>
-
           {/* Horizontal Scroll Cards */}
-        
         </motion.section>
       </div>
 
-
-      <div className="contain">
+      {/* <div className="contain">
         <div className="left">
           <div className="l1">
             <div className="ctitle">Cognitive Workspace </div>
@@ -205,10 +293,79 @@ const v = useTransform(scrollYProgress, [0, 1], ["0%", "-400%"]);
             <div className="csubtitle">Silence the noise. Enter deep flow.</div>
           </div>
         </div>
+      </div> */}
+
+      <div className="container2">
+        <div className="golden-sub">
+          <div className="golden-sub1">
+            <div className="hover-group">
+              {Object.keys(hoverData).map((key, idx) => (
+                <div
+                  key={idx}
+                  className={`hover-item${idx === 4 ? "01" : ""}`}
+                  onMouseEnter={() => handleHover(key)}
+                  onMouseLeave={() => {
+                    setHoverText("");
+                    setSelectedCategory("All");
+                  }}
+                >
+                  <div className="hover-text">{key}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+       
+            <div className="golden-sub2">
+  <a href="#capsule" className="try-now-link">
+    Try Now →
+  </a>
+</div>
+
+          
+        </div>
+
+        <div className="golden-main">
+          <div className="abovetext">
+            The AI that can think, remember, and act for you
+          </div>
+
+          <div className="search-wrapper">
+            <div className="searchl1">MindFlux</div>
+
+            <div className="searchcenter">
+              <div className="search-bar">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder={placeholder}
+                  readOnly
+                />
+              </div>
+            </div>
+
+            <div className="searchr1">
+              <div className="icon-wrapper">
+                <i className="fas fa-filter"></i>
+              </div>
+              <select
+                className="category-dropdown"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option>All</option>
+                <option>Tasks</option>
+                <option>Memory</option>
+                <option>Focus</option>
+                <option>AI Actions</option>
+              </select>
+              <div className="icon-wrapper">
+                <i className="fas fa-microphone"></i>
+              </div>
+              <button className="search-button">→</button>
+            </div>
+          </div>
+        </div>
       </div>
-
-
-
     </div>
   );
 };
